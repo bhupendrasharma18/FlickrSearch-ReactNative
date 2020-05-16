@@ -41,7 +41,7 @@ class GalleryComponent extends Component {
             renderItem={({ item }) => <Item title={item.title} imgUrl={item.url_s} itemWidth={this.state.itemWidth} />}
             keyExtractor={item => item.id}
             onEndReached={this.loadMore}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0}
             initialNumToRender={5}
           />
         </View>

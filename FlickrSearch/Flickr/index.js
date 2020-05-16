@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, AsyncStorage } from 'react-native';
 import Search from './components/SearchComponent';
 import Gallery from './components/GalleryComponent';
 import axios from 'axios';
@@ -14,26 +14,86 @@ class Flickr extends Component {
       pageNo: 0,
       searchedText: "",
     };
+    this.timer
+  }
+
+  componentDidMount() {
+    // this.retrieveData("kitten")
+    // if (this.state.name == null) {
+    //   this.save("kitten", DATA)
+    //   this.retrieveData("kitten")
+    // }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timer)
   }
 
   requestData = (text) => {
     const urlEndpoint = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&format=json&text=.${text}&nojsoncallback=true&per_page=5&extras=url_s&page=${this.state.pageNo+1}`
+    
     axios.get(urlEndpoint)
     .then((response) => { 
-      console.log(response)
-      this.setState((prevState, nextProps) => ({
-        ...this.state,
-        flickrData: {
-          page: response.data.photos.page,
-          pages: response.data.photos.pages,
-          total: response.data.photos.total,
-          photo: prevState.flickrData ? [...prevState.flickrData.photo, ...response.data.photos.photo] : response.data.photos.photo
-        },
-        pageNo: response.data.photos.page,
-        searchedText: text,
-      }))
+      // console.log('requestData')
+      this.updateStateAndSaveData(response, text)
     }).catch((error) => { console.log(error)
     })
+    
+    // this.retrieveData(text.toLowerCase())
+  }
+
+  updateStateAndSaveData(response, searchedText) {
+    // console.log(response);
+    
+    // console.log('updateStateAndSaveData')
+    const page = response.data.photos.page
+    const pages = response.data.photos.pages
+    const total = response.data.photos.total
+    const newPhotos = response.data.photos.photo //this.state.flickrData ? [...this.state.flickrData.photo, ...response.data.photos.photo] : response.data.photos.photo
+    this.setState((prevState) => ({
+      ...this.state,
+      flickrData: {
+        page,
+        pages,
+        total,
+        photo: prevState.flickrData ? [...prevState.flickrData.photo, ...response.data.photos.photo] : response.data.photos.photo
+      },
+      pageNo: page,
+      searchedText: searchedText,
+    }))
+
+    this.timer = setTimeout(() => { 
+      this.save(this.state.searchedText.toLowerCase(), this.state.flickrData)
+    }, 200);
+  }
+
+  retrieveData = async (key) => {
+    try {
+      const stringifiedArray = await AsyncStorage.getItem(key)
+      const data = JSON.parse(stringifiedArray)
+      // console.log('retrieveData');
+      // console.log(data);
+      if (data != null) {
+        console.log(data);
+        this.setState({
+          ...this.state,
+          flickrData: data,
+          pageNo: data.page,
+        })
+      }
+    } catch (e) {
+      console.log('Failed to load.')
+    }
+  }
+
+  save = async (key, data) => {
+    try {
+      const stringifiedArray = JSON.stringify(data)
+      await AsyncStorage.setItem(key, stringifiedArray)
+      console.log('Data successfully saved!');
+    } catch (e) {
+      console.log('Failed to save.')
+    }
   }
 
   loadMore = () => {
@@ -41,15 +101,25 @@ class Flickr extends Component {
     this.requestData(this.state.searchedText)
   }
 
+  resetAndSearch = (text) => {
+    this.setState({
+      flickrData: null,
+      pageNo: 0,
+      searchedText: text
+    }, this.requestData(text))
+  }
+
   render() {
     // const list = this.state.flickrData && this.state.flickrData.photos && this.state.flickrData.photos.photo ?
     //   <Gallery data={this.state.flickrData.photos.photo} columns={1} loadMore={this.loadMore}></Gallery> : null
-    const list = this.state.flickrData && this.state.flickrData.photo ?
-      <Gallery data={this.state.flickrData.photo} columns={1} loadMore={this.loadMore}></Gallery> : null
+
+    // const list = this.state.flickrData && this.state.flickrData.photo ?
+    //   <Gallery data={this.state.flickrData.photo} columns={1} loadMore={this.loadMore}></Gallery> : null
+    const list = (this.state.flickrData) ? <Gallery data={this.state.flickrData.photo} columns={1} loadMore={this.loadMore}></Gallery> : null
     return (
       <View>
         <Text> index </Text>
-        <Search search={this.requestData}></Search>
+        <Search search={this.resetAndSearch}></Search>
         {list}
         {/* <Gallery data={DATA.photos.photo} columns={1} loadMore={this.loadMore}></Gallery> */}
       </View>
