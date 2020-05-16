@@ -18,6 +18,7 @@ class Flickr extends Component {
       searchedText: "",
       columns: 2,
       isInternetReachable: true,
+      isLoading: false,
     };
     this.timer
     this.unsubscribe
@@ -49,8 +50,13 @@ class Flickr extends Component {
     this.unsubscribe();
   }
 
+  // requestData - makes call to Flickr API
   requestData = (text) => {
-    if (this.state.isInternetReachable) {
+    if (this.state.isInternetReachable && !this.state.isLoading) {
+      this.setState({
+        ...this.state,
+        isLoading: true,
+      })
       const urlEndpoint = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&format=json&text=.${text}&nojsoncallback=true&per_page=20&extras=url_s&page=${this.state.pageNo+1}`
       axios.get(urlEndpoint)
       .then((response) => { 
@@ -66,6 +72,7 @@ class Flickr extends Component {
     }    
   }
 
+  // Updates current state and modifies datasource, also stores data for offline request
   updateStateAndSaveData(response, searchedText) {
     const page = response.data.photos.page
     const pages = response.data.photos.pages
@@ -81,6 +88,7 @@ class Flickr extends Component {
       },
       pageNo: page,
       searchedText: searchedText,
+      isLoading: false,
     }))
 
     this.timer = setTimeout(() => { 
@@ -88,6 +96,8 @@ class Flickr extends Component {
     }, 200);
   }
 
+  // retrieveData - retrieve search response data from AsyncStorage, if internet isn't reachable
+  // key is the searched text
   retrieveData = async (key) => {
     try {
       const stringifiedArray = await AsyncStorage.getItem(key)
@@ -105,6 +115,7 @@ class Flickr extends Component {
     }
   }
 
+  // saveData - Save search response data to AsyncStorage, so can be used in offline mode
   saveData = async (key, data) => {
     try {
       const stringifiedArray = JSON.stringify(data)
@@ -114,10 +125,12 @@ class Flickr extends Component {
     }
   }
 
+  // loadMorePhotos - will request data for subsequent pages when scrolling
   loadMorePhotos = () => {
     this.requestData(this.state.searchedText)
   }
 
+  // resetAndSearch - will reset current state and makes new request 
   resetAndSearch = (text) => {
     if (text !== this.state.searchedText) {
       this.setState({
@@ -129,6 +142,7 @@ class Flickr extends Component {
     }
   }
 
+  // increaseColumn - increases number of columns for grid up to 4
   increaseColumn = () => {
     if (this.state.columns < 4) {
       this.setState((prevState) => ({
@@ -138,6 +152,7 @@ class Flickr extends Component {
     }
   }
 
+  // decreaseColumn - decreases number of columns for grid up to 2
   decreaseColumn = () => {
     if (this.state.columns > 2) {
       this.setState((prevState) => ({
@@ -148,12 +163,12 @@ class Flickr extends Component {
   }
 
   render() {
-    const list = (this.state.flickrData && this.state.flickrData.photo) ? <Gallery data={this.state.flickrData.photo} columns={this.state.columns} loadMorePhotos={this.loadMorePhotos} itemWidth={SCREEN_WIDTH / this.state.columns}></Gallery> : null
+    const itemslist = (this.state.flickrData && this.state.flickrData.photo) ? <Gallery data={this.state.flickrData.photo} columns={this.state.columns} loadMorePhotos={this.loadMorePhotos} itemWidth={SCREEN_WIDTH / this.state.columns}></Gallery> : null
     return (
       <View>
         <Search search={this.resetAndSearch}></Search>
         <ColumnModifier increament={this.increaseColumn} decreament={this.decreaseColumn} count={this.state.columns}></ColumnModifier>
-        {list}
+        {itemslist}
       </View>
     );
   }

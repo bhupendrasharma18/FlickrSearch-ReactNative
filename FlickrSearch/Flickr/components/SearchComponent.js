@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TextInput, Button, TouchableHighlight } from 'react-native';
+import { View, StyleSheet, TextInput, Button, Text, TouchableHighlight } from 'react-native';
 
 class SearchComponent extends Component {
   constructor(props) {
@@ -27,9 +27,11 @@ class SearchComponent extends Component {
       <View style={styles.container}>
         <View style={styles.searchContainer}>
           <TextInput style={styles.textInput} placeholder='Search on Flikcr' onChangeText={this.handleInputText}></TextInput>
-          <TouchableHighlight style ={styles.button}>
-            <Button title='Submit' onPress={this.actionSubmit} disabled={!this.state.canSubmit}></Button> 
-          </TouchableHighlight> 
+          <TouchableHighlight style ={styles.button} underlayColor="white" onPress={this.actionSubmit} disabled={!this.state.canSubmit}>
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Done</Text>
+          </View>
+          </TouchableHighlight>
         </View>
       </View>
     );
@@ -40,6 +42,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center', 
     justifyContent: 'center',
+    backgroundColor: 'black',
   },
   searchContainer: {
     flexDirection: 'row',
@@ -47,20 +50,34 @@ const styles = StyleSheet.create({
     marginLeft: 2,
     marginRight: 2,
     height: 40,
-    alignItems: 'center',
+    justifyContent: 'center',
   },
   textInput: {
     flex: 1,
     borderWidth: 0.5,
     borderColor: 'black',
-    marginRight: 5,
+    marginRight: 15,
     paddingHorizontal: 10,
     paddingVertical: 5,
     height: 30,
+    backgroundColor: 'white',
+    marginLeft: 10,
+    marginBottom: 10,
+    borderRadius: 7,
   },
   button: {
-    width: 90,
-  }
+    width: 50,
+    alignItems: 'center',
+    height: 30,
+    marginRight: 10,
+    backgroundColor: 'black',
+  },
+  buttonText: {
+    textAlign: 'center',
+    paddingVertical: 2,
+    color: 'white',
+    fontSize: 20,
+  },
 });
 
 export default SearchComponent;
