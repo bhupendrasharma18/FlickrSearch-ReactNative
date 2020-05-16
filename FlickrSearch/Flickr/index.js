@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, AsyncStorage } from 'react-native';
+import { View, AsyncStorage } from 'react-native';
 import Search from './components/SearchComponent';
 import Gallery from './components/GalleryComponent';
 import axios from 'axios';
@@ -32,14 +32,14 @@ class Flickr extends Component {
   requestData = (text) => {
     const urlEndpoint = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&format=json&text=.${text}&nojsoncallback=true&per_page=5&extras=url_s&page=${this.state.pageNo+1}`
     
-    axios.get(urlEndpoint)
-    .then((response) => { 
-      // console.log('requestData')
-      this.updateStateAndSaveData(response, text)
-    }).catch((error) => { console.log(error)
-    })
+    // axios.get(urlEndpoint)
+    // .then((response) => { 
+    //   // console.log('requestData')
+    //   this.updateStateAndSaveData(response, text)
+    // }).catch((error) => { console.log(error)
+    // })
     
-    // this.retrieveData(text.toLowerCase())
+    this.retrieveData(text.toLowerCase())
   }
 
   updateStateAndSaveData(response, searchedText) {
@@ -115,10 +115,9 @@ class Flickr extends Component {
 
     // const list = this.state.flickrData && this.state.flickrData.photo ?
     //   <Gallery data={this.state.flickrData.photo} columns={1} loadMore={this.loadMore}></Gallery> : null
-    const list = (this.state.flickrData) ? <Gallery data={this.state.flickrData.photo} columns={1} loadMore={this.loadMore}></Gallery> : null
+    const list = (this.state.flickrData) ? <Gallery data={this.state.flickrData.photo} columns={2} loadMore={this.loadMore}></Gallery> : null
     return (
       <View>
-        <Text> index </Text>
         <Search search={this.resetAndSearch}></Search>
         {list}
         {/* <Gallery data={DATA.photos.photo} columns={1} loadMore={this.loadMore}></Gallery> */}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
+import { View, StyleSheet, TextInput, Button } from 'react-native';
 
 class SearchComponent extends Component {
   constructor(props) {
@@ -25,7 +25,6 @@ class SearchComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text> SearchComponent </Text>
         <View style={styles.searchContainer}>
           <TextInput style={styles.textInput} placeholder='Search on Flikcr' onChangeText={this.handleInputText}></TextInput>
           <Button title='Submit' onPress={this.actionSubmit} disabled={!this.state.canSubmit}></Button>
@@ -39,7 +38,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center', 
     justifyContent: 'center',
-    // backgroundColor: 'red',
   },
   searchContainer: {
     flexDirection: 'row',
