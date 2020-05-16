@@ -27,7 +27,6 @@ class SearchComponent extends Component {
       <View style={styles.container}>
         <View style={styles.searchContainer}>
           <TextInput style={styles.textInput} placeholder='Search on Flikcr' onChangeText={this.handleInputText}></TextInput>
-          {/* <Button style={styles.button} title='Submit' onPress={this.actionSubmit} disabled={!this.state.canSubmit}></Button> */}
           <TouchableHighlight style ={styles.button}>
             <Button title='Submit' onPress={this.actionSubmit} disabled={!this.state.canSubmit}></Button> 
           </TouchableHighlight> 
@@ -56,9 +55,11 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     marginRight: 5,
     paddingHorizontal: 10,
+    paddingVertical: 5,
+    height: 30,
   },
   button: {
-    width: 100,
+    width: 90,
   }
 });
 

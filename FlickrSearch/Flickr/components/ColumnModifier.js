@@ -1,11 +1,21 @@
 import React from 'react';
-import { Text, View, Button, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TouchableHighlight } from 'react-native';
 
-const componentName = (props) => (
+const DIMENSION = 44
+
+const ColumnModifier = (props) => (
     <View style={styles.container}>
-        <Button title='-' onPress={props.decreament}></Button>
-        <Text>Number of columns: {props.count} </Text>
-        <Button title='+' onPress={props.increament}></Button>
+        <TouchableHighlight onPress={props.decreament} underlayColor="white">
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>-</Text>
+          </View>
+        </TouchableHighlight>
+        <Text style={styles.text}> COLUMNS : {props.count} </Text>
+        <TouchableHighlight onPress={props.increament} underlayColor="white">
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>+</Text>
+          </View>
+        </TouchableHighlight>
     </View>
 );
 
@@ -14,8 +24,27 @@ const styles = StyleSheet.create({
         alignItems: 'center', 
         justifyContent: 'center',
         flexDirection: 'row',
-        marginTop: 10,
+        marginTop: 5,
+        height: 44,
+    },
+    button: {
+      width: DIMENSION,
+      height: DIMENSION,
+      alignItems: 'center',
+      backgroundColor: '#2196F3',
+      borderRadius: DIMENSION / 2,
+    },
+    buttonText: {
+      textAlign: 'center',
+      paddingVertical: 2,
+      color: 'white',
+      fontSize: 30,
+    },
+    text: {
+        alignSelf: 'center',
+        justifyContent: 'center',
+        fontSize: 20,
     }
 });
 
-export default componentName;
+export default ColumnModifier;

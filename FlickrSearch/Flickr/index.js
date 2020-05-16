@@ -51,9 +51,7 @@ class Flickr extends Component {
 
   requestData = (text) => {
     if (this.state.isInternetReachable) {
-      console.log('requestData');
-      
-      const urlEndpoint = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&format=json&text=.${text}&nojsoncallback=true&per_page=5&extras=url_s&page=${this.state.pageNo+1}`
+      const urlEndpoint = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&format=json&text=.${text}&nojsoncallback=true&per_page=20&extras=url_s&page=${this.state.pageNo+1}`
       axios.get(urlEndpoint)
       .then((response) => { 
         this.updateStateAndSaveData(response, text)
@@ -117,7 +115,6 @@ class Flickr extends Component {
   }
 
   loadMorePhotos = () => {
-    console.log('loadMore final');
     this.requestData(this.state.searchedText)
   }
 

@@ -3,8 +3,8 @@ import { View, StyleSheet, FlatList, Image } from 'react-native';
 
 function Item({ imgUrl, itemWidth }) {
   return (
-    <View style={[styles.item, {width: itemWidth, height: itemWidth}]}>
-      {imgUrl ? <Image style={[styles.image, {width: itemWidth-5, height: itemWidth-5}]} source={{uri: imgUrl}} /> : null }
+    <View style={[{width: itemWidth, height: itemWidth}]}>
+      {imgUrl ? <Image style={[styles.image, {width: itemWidth-2, height: itemWidth-2}]} source={{uri: imgUrl}} /> : null }
     </View>
   );
 }
@@ -28,8 +28,8 @@ class GalleryComponent extends Component {
             renderItem={({ item }) => <Item title={item.title} imgUrl={item.url_s} itemWidth={this.props.itemWidth} />}
             keyExtractor={item => item.id}
             onEndReached={this.loadMoreItems}
-            onEndReachedThreshold={0.3}
-            initialNumToRender={5}
+            onEndReachedThreshold={0.5}
+            initialNumToRender={20}
             key={this.props.columns}
           />
         </View>
@@ -40,12 +40,8 @@ class GalleryComponent extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,//Constants.statusBarHeight,
-    marginBottom: 200,
+    marginTop: 5,
     justifyContent: 'center',
-  },
-  item: {
-    backgroundColor: '#f9c2ff',
   },
   title: {
     fontSize: 32,
