@@ -11,32 +11,47 @@ class Flickr extends Component {
     super(props);
     this.state = {
       flickrData: null,
-      pageNo: 1,
+      pageNo: 0,
+      searchedText: "",
     };
   }
 
   requestData = (text) => {
-    const urlEndpoint = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&format=json&text=.${text}&nojsoncallback=true&per_page=20&extras=url_s&page=${this.state.pageNo}`
+    const urlEndpoint = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&format=json&text=.${text}&nojsoncallback=true&per_page=5&extras=url_s&page=${this.state.pageNo+1}`
     axios.get(urlEndpoint)
     .then((response) => { 
       console.log(response)
-      this.setState((prevState, props) => ({
+      this.setState((prevState, nextProps) => ({
         ...this.state,
-        flickrData: response.data,
-        pageNo: prevState.pageNo+1,
+        flickrData: {
+          page: response.data.photos.page,
+          pages: response.data.photos.pages,
+          total: response.data.photos.total,
+          photo: prevState.flickrData ? [...prevState.flickrData.photo, ...response.data.photos.photo] : response.data.photos.photo
+        },
+        pageNo: response.data.photos.page,
+        searchedText: text,
       }))
     }).catch((error) => { console.log(error)
     })
   }
 
+  loadMore = () => {
+    console.log('loadMore final');
+    this.requestData(this.state.searchedText)
+  }
+
   render() {
-    const list = this.state.flickrData && this.state.flickrData.photos && this.state.flickrData.photos.photo ?
-      <Gallery data={this.state.flickrData.photos.photo} columns={2}></Gallery> : null
+    // const list = this.state.flickrData && this.state.flickrData.photos && this.state.flickrData.photos.photo ?
+    //   <Gallery data={this.state.flickrData.photos.photo} columns={1} loadMore={this.loadMore}></Gallery> : null
+    const list = this.state.flickrData && this.state.flickrData.photo ?
+      <Gallery data={this.state.flickrData.photo} columns={1} loadMore={this.loadMore}></Gallery> : null
     return (
       <View>
         <Text> index </Text>
         <Search search={this.requestData}></Search>
         {list}
+        {/* <Gallery data={DATA.photos.photo} columns={1} loadMore={this.loadMore}></Gallery> */}
       </View>
     );
   }

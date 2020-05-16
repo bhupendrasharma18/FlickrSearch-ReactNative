@@ -26,6 +26,11 @@ class GalleryComponent extends Component {
     };
   }
 
+  loadMore = () => {
+    console.log('loadMore in Galllery');
+    this.props.loadMore()
+  }
+
   render() {
     return (
       <View>
@@ -35,6 +40,9 @@ class GalleryComponent extends Component {
             numColumns={this.props.columns}
             renderItem={({ item }) => <Item title={item.title} imgUrl={item.url_s} itemWidth={this.state.itemWidth} />}
             keyExtractor={item => item.id}
+            onEndReached={this.loadMore}
+            onEndReachedThreshold={0.5}
+            initialNumToRender={5}
           />
         </View>
       </View>
@@ -60,7 +68,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 70,
-    height: 100,
+    height: 200,
     backgroundColor: 'red'
   }
 });
