@@ -1,29 +1,21 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
+import { View, StyleSheet, FlatList, Image } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
-const SCREEN_WIDTH = width
-const PRODUCT_ITEM_MARGIN = 5
-
-function Item({ title, imgUrl, itemWidth }) {
+function Item({ imgUrl, itemWidth }) {
   return (
-    <View style={[styles.item, {width: itemWidth}]}>
-      {/* <Text style={styles.title}>{title}</Text> */}
-      {imgUrl ? <Image style={styles.image} source={{uri: imgUrl}} /> : null}
+    <View style={[{width: itemWidth, height: itemWidth}]}>
+      {imgUrl ? <Image style={[styles.image, {width: itemWidth-2, height: itemWidth-2}]} source={{uri: imgUrl}} /> : null }
     </View>
   );
-}
-
-const itemWidth = column => {
-  return (SCREEN_WIDTH / column) - (column-1) * PRODUCT_ITEM_MARGIN
 }
 
 class GalleryComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      itemWidth: itemWidth(this.props.columns)
-    };
+  }
+
+  loadMoreItems = () => {
+    this.props.loadMorePhotos()
   }
 
   render() {
@@ -33,8 +25,12 @@ class GalleryComponent extends Component {
           <FlatList
             data={this.props.data}
             numColumns={this.props.columns}
-            renderItem={({ item }) => <Item title={item.title} imgUrl={item.url_s} itemWidth={this.state.itemWidth} />}
+            renderItem={({ item }) => <Item title={item.title} imgUrl={item.url_s} itemWidth={this.props.itemWidth} />}
             keyExtractor={item => item.id}
+            onEndReached={this.loadMoreItems}
+            onEndReachedThreshold={0.5}
+            initialNumToRender={20}
+            key={this.props.columns}
           />
         </View>
       </View>
@@ -44,24 +40,16 @@ class GalleryComponent extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,//Constants.statusBarHeight,
-  },
-  item: {
-    backgroundColor: '#f9c2ff',
-    // padding: 20,
-    // marginVertical: 8,
-    // marginHorizontal: 16,
-    marginHorizontal: PRODUCT_ITEM_MARGIN,
-    borderWidth: 1,
-    borderColor: 'blue',
+    marginTop: 5,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 32,
   },
   image: {
-    width: 70,
-    height: 100,
-    backgroundColor: 'red'
+    flex: 1,
+    justifyContent: 'center',
+    alignSelf: 'center',
   }
 });
 

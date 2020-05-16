@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
+import { View, StyleSheet, TextInput, Button, TouchableHighlight } from 'react-native';
 
 class SearchComponent extends Component {
   constructor(props) {
@@ -8,6 +8,10 @@ class SearchComponent extends Component {
       canSubmit: false,
       searchedText: "",
     };
+  }
+
+  actionSubmit = () => {
+    this.props.search(this.state.searchedText)
   }
 
   handleInputText = (text) => {
@@ -21,10 +25,11 @@ class SearchComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text> SearchComponent </Text>
         <View style={styles.searchContainer}>
           <TextInput style={styles.textInput} placeholder='Search on Flikcr' onChangeText={this.handleInputText}></TextInput>
-          <Button title='Submit' onPress={this.makeRequestCountryDetails} disabled={!this.state.canSubmit}></Button>
+          <TouchableHighlight style ={styles.button}>
+            <Button title='Submit' onPress={this.actionSubmit} disabled={!this.state.canSubmit}></Button> 
+          </TouchableHighlight> 
         </View>
       </View>
     );
@@ -35,20 +40,27 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center', 
     justifyContent: 'center',
-    // backgroundColor: 'red',
   },
   searchContainer: {
     flexDirection: 'row',
-    top: 20,
+    top: 5,
+    marginLeft: 2,
+    marginRight: 2,
+    height: 40,
+    alignItems: 'center',
   },
   textInput: {
     flex: 1,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: 'black',
-    marginLeft: 10,
-    marginRight: 10,
+    marginRight: 5,
     paddingHorizontal: 10,
+    paddingVertical: 5,
+    height: 30,
   },
+  button: {
+    width: 90,
+  }
 });
 
 export default SearchComponent;
