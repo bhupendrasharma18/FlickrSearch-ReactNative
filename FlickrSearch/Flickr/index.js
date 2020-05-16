@@ -15,7 +15,7 @@ class Flickr extends Component {
       <View>
         <Text> index </Text>
         <Search></Search>
-        <Gallery data={DATA}></Gallery>
+        <Gallery data={DATA.photos.photo}></Gallery>
       </View>
     );
   }
@@ -23,41 +23,4 @@ class Flickr extends Component {
 
 export default Flickr;
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-  {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba1',
-      title: '4',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f633',
-      title: '5',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d724',
-      title: '6',
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba5',
-      title: '7',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f637',
-      title: '8',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d792',
-      title: '9',
-    },
-];
+const DATA = {"photos":{"page":1,"pages":92844,"perpage":2,"total":"185687","photo":[{"id":"49897610703","owner":"91751276@N08","secret":"5e04f05b5c","server":"65535","farm":66,"title":"wk 20...cat or kitten","ispublic":1,"isfriend":0,"isfamily":0,"url_s":"https:\/\/live.staticflickr.com\/65535\/49897610703_5e04f05b5c_m.jpg","height_s":240,"width_s":193},{"id":"49897485593","owner":"142178697@N05","secret":"ba3456f63c","server":"65535","farm":66,"title":"KuroMika 5034.jpg","ispublic":1,"isfriend":0,"isfamily":0,"url_s":"https:\/\/live.staticflickr.com\/65535\/49897485593_ba3456f63c_m.jpg","height_s":160,"width_s":240}]},"stat":"ok"}

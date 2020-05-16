@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
 
-function Item({ title }) {
+function Item({ title, imgUrl }) {
   return (
     <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
+      {/* <Text style={styles.title}>{title}</Text> */}
+      {imgUrl ? <Image style={styles.image} source={{uri: imgUrl}} /> : null}
     </View>
   );
 }
@@ -17,14 +18,15 @@ class GalleryComponent extends Component {
   }
 
   render() {
+    console.log(this.props);
+    
     return (
       <View>
-        <Text> GalleryComponent </Text>
         <View style={styles.container}>
           <FlatList
             data={this.props.data}
             numColumns={2}
-            renderItem={({ item }) => <Item title={item.title} />}
+            renderItem={({ item }) => <Item title={item.title} imgUrl={item.url_s} />}
             keyExtractor={item => item.id}
           />
         </View>
@@ -46,6 +48,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
   },
+  image: {
+    width: 100,
+    height: 100,
+    backgroundColor: 'red'
+  }
 });
 
 export default GalleryComponent;
