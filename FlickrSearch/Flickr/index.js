@@ -18,6 +18,7 @@ class Flickr extends Component {
       searchedText: "",
       columns: 2,
       isInternetReachable: true,
+      isLoading: false,
     };
     this.timer
     this.unsubscribe
@@ -50,7 +51,11 @@ class Flickr extends Component {
   }
 
   requestData = (text) => {
-    if (this.state.isInternetReachable) {
+    if (this.state.isInternetReachable && !this.state.isLoading) {
+      this.setState({
+        ...this.state,
+        isLoading: true,
+      })
       const urlEndpoint = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&format=json&text=.${text}&nojsoncallback=true&per_page=20&extras=url_s&page=${this.state.pageNo+1}`
       axios.get(urlEndpoint)
       .then((response) => { 
@@ -81,6 +86,7 @@ class Flickr extends Component {
       },
       pageNo: page,
       searchedText: searchedText,
+      isLoading: false,
     }))
 
     this.timer = setTimeout(() => { 
