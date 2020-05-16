@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
-
-const { width, height } = Dimensions.get('window');
-const SCREEN_WIDTH = width
-const PRODUCT_ITEM_MARGIN = 0
+import { View, StyleSheet, FlatList, Image } from 'react-native';
 
 function Item({ imgUrl, itemWidth }) {
   return (
@@ -13,26 +9,16 @@ function Item({ imgUrl, itemWidth }) {
   );
 }
 
-const itemWidth = column => {
-  return ((SCREEN_WIDTH - PRODUCT_ITEM_MARGIN) / column) - PRODUCT_ITEM_MARGIN
-}
-
 class GalleryComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      itemWidth: itemWidth(this.props.columns)
-    };
   }
 
-  loadMore = () => {
-    console.log('loadMore in Galllery');
-    this.props.loadMore()
+  loadMoreItems = () => {
+    this.props.loadMorePhotos()
   }
 
   render() {
-    console.log(this.props.data);
-    
     return (
       <View>
         <View style={styles.container}>
@@ -41,7 +27,7 @@ class GalleryComponent extends Component {
             numColumns={this.props.columns}
             renderItem={({ item }) => <Item title={item.title} imgUrl={item.url_s} itemWidth={this.props.itemWidth} />}
             keyExtractor={item => item.id}
-            onEndReached={this.loadMore}
+            onEndReached={this.loadMoreItems}
             onEndReachedThreshold={0.3}
             initialNumToRender={5}
             key={this.props.columns}

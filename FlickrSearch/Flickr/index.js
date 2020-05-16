@@ -52,7 +52,7 @@ class Flickr extends Component {
     const page = response.data.photos.page
     const pages = response.data.photos.pages
     const total = response.data.photos.total
-    const newPhotos = response.data.photos.photo //this.state.flickrData ? [...this.state.flickrData.photo, ...response.data.photos.photo] : response.data.photos.photo
+    const newPhotos = response.data.photos.photo
     this.setState((prevState) => ({
       ...this.state,
       flickrData: {
@@ -66,7 +66,7 @@ class Flickr extends Component {
     }))
 
     this.timer = setTimeout(() => { 
-      this.save(this.state.searchedText.toLowerCase(), this.state.flickrData)
+      this.saveData(this.state.searchedText.toLowerCase(), this.state.flickrData)
     }, 200);
   }
 
@@ -74,8 +74,6 @@ class Flickr extends Component {
     try {
       const stringifiedArray = await AsyncStorage.getItem(key)
       const data = JSON.parse(stringifiedArray)
-      // console.log('retrieveData');
-      // console.log(data);
       if (data != null) {
         console.log(data);
         this.setState({
@@ -89,17 +87,16 @@ class Flickr extends Component {
     }
   }
 
-  save = async (key, data) => {
+  saveData = async (key, data) => {
     try {
       const stringifiedArray = JSON.stringify(data)
       await AsyncStorage.setItem(key, stringifiedArray)
-      console.log('Data successfully saved!');
     } catch (e) {
       console.log('Failed to save.')
     }
   }
 
-  loadMore = () => {
+  loadMorePhotos = () => {
     console.log('loadMore final');
     this.requestData(this.state.searchedText)
   }
@@ -132,10 +129,7 @@ class Flickr extends Component {
   }
 
   render() {
-    console.log('columns');
-    
-    console.log(this.state.columns);
-    const list = (this.state.flickrData) ? <Gallery data={this.state.flickrData.photo} columns={this.state.columns} loadMore={this.loadMore} itemWidth={SCREEN_WIDTH / this.state.columns}></Gallery> : null
+    const list = (this.state.flickrData) ? <Gallery data={this.state.flickrData.photo} columns={this.state.columns} loadMorePhotos={this.loadMorePhotos} itemWidth={SCREEN_WIDTH / this.state.columns}></Gallery> : null
     return (
       <View>
         <Search search={this.resetAndSearch}></Search>
@@ -147,5 +141,3 @@ class Flickr extends Component {
 }
 
 export default Flickr;
-
-const DATA = {"photos":{"page":1,"pages":92844,"perpage":2,"total":"185687","photo":[{"id":"49897610703","owner":"91751276@N08","secret":"5e04f05b5c","server":"65535","farm":66,"title":"wk 20...cat or kitten","ispublic":1,"isfriend":0,"isfamily":0,"url_s":"https:\/\/live.staticflickr.com\/65535\/49897610703_5e04f05b5c_m.jpg","height_s":240,"width_s":193},{"id":"49897485593","owner":"142178697@N05","secret":"ba3456f63c","server":"65535","farm":66,"title":"KuroMika 5034.jpg","ispublic":1,"isfriend":0,"isfamily":0,"url_s":"https:\/\/live.staticflickr.com\/65535\/49897485593_ba3456f63c_m.jpg","height_s":160,"width_s":240},{"id":"49897485598","owner":"142178697@N05","secret":"ba3456f63c","server":"65535","farm":66,"title":"KuroMika 5034.jpg","ispublic":1,"isfriend":0,"isfamily":0,"url_s":"https:\/\/live.staticflickr.com\/65535\/49897485593_ba3456f63c_m.jpg","height_s":160,"width_s":240},{"id":"49897610709","owner":"91751276@N08","secret":"5e04f05b5c","server":"65535","farm":66,"title":"wk 20...cat or kitten","ispublic":1,"isfriend":0,"isfamily":0,"url_s":"https:\/\/live.staticflickr.com\/65535\/49897610703_5e04f05b5c_m.jpg","height_s":240,"width_s":193}]},"stat":"ok"}
