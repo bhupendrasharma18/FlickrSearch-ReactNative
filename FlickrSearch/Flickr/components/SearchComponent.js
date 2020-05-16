@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TextInput, Button } from 'react-native';
+import { View, StyleSheet, TextInput, Button, TouchableHighlight } from 'react-native';
 
 class SearchComponent extends Component {
   constructor(props) {
@@ -27,7 +27,10 @@ class SearchComponent extends Component {
       <View style={styles.container}>
         <View style={styles.searchContainer}>
           <TextInput style={styles.textInput} placeholder='Search on Flikcr' onChangeText={this.handleInputText}></TextInput>
-          <Button title='Submit' onPress={this.actionSubmit} disabled={!this.state.canSubmit}></Button>
+          {/* <Button style={styles.button} title='Submit' onPress={this.actionSubmit} disabled={!this.state.canSubmit}></Button> */}
+          <TouchableHighlight style ={styles.button}>
+            <Button title='Submit' onPress={this.actionSubmit} disabled={!this.state.canSubmit}></Button> 
+          </TouchableHighlight> 
         </View>
       </View>
     );
@@ -41,16 +44,22 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     flexDirection: 'row',
-    top: 20,
+    top: 5,
+    marginLeft: 2,
+    marginRight: 2,
+    height: 40,
+    alignItems: 'center',
   },
   textInput: {
     flex: 1,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: 'black',
-    marginLeft: 10,
-    marginRight: 10,
+    marginRight: 5,
     paddingHorizontal: 10,
   },
+  button: {
+    width: 100,
+  }
 });
 
 export default SearchComponent;

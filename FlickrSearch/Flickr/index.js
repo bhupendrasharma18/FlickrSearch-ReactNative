@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { View, AsyncStorage } from 'react-native';
+import { View, AsyncStorage, Dimensions } from 'react-native';
 import Search from './components/SearchComponent';
 import Gallery from './components/GalleryComponent';
+import ColumnModifier from './components/ColumnModifier';
 import axios from 'axios';
 
 const API_KEY = '3264f8a3442962793f611977d2589e03'
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 class Flickr extends Component {
   constructor(props) {
@@ -13,6 +15,7 @@ class Flickr extends Component {
       flickrData: null,
       pageNo: 0,
       searchedText: "",
+      columns: 2,
     };
     this.timer
   }
@@ -103,24 +106,41 @@ class Flickr extends Component {
 
   resetAndSearch = (text) => {
     this.setState({
+      ...this.state,
       flickrData: null,
       pageNo: 0,
       searchedText: text
     }, this.requestData(text))
   }
 
-  render() {
-    // const list = this.state.flickrData && this.state.flickrData.photos && this.state.flickrData.photos.photo ?
-    //   <Gallery data={this.state.flickrData.photos.photo} columns={1} loadMore={this.loadMore}></Gallery> : null
+  increaseColumn = () => {
+    if (this.state.columns < 4) {
+      this.setState((prevState) => ({
+        ...prevState,
+        columns: prevState.columns + 1
+      }))
+    }
+  }
 
-    // const list = this.state.flickrData && this.state.flickrData.photo ?
-    //   <Gallery data={this.state.flickrData.photo} columns={1} loadMore={this.loadMore}></Gallery> : null
-    const list = (this.state.flickrData) ? <Gallery data={this.state.flickrData.photo} columns={2} loadMore={this.loadMore}></Gallery> : null
+  decreaseColumn = () => {
+    if (this.state.columns > 2) {
+      this.setState((prevState) => ({
+        ...prevState,
+        columns: prevState.columns - 1
+      }))  
+    }
+  }
+
+  render() {
+    console.log('columns');
+    
+    console.log(this.state.columns);
+    const list = (this.state.flickrData) ? <Gallery data={this.state.flickrData.photo} columns={this.state.columns} loadMore={this.loadMore} itemWidth={SCREEN_WIDTH / this.state.columns}></Gallery> : null
     return (
       <View>
         <Search search={this.resetAndSearch}></Search>
+        <ColumnModifier increament={this.increaseColumn} decreament={this.decreaseColumn} count={this.state.columns}></ColumnModifier>
         {list}
-        {/* <Gallery data={DATA.photos.photo} columns={1} loadMore={this.loadMore}></Gallery> */}
       </View>
     );
   }

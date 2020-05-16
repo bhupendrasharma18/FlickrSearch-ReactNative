@@ -39,11 +39,12 @@ class GalleryComponent extends Component {
           <FlatList
             data={this.props.data}
             numColumns={this.props.columns}
-            renderItem={({ item }) => <Item title={item.title} imgUrl={item.url_s} itemWidth={this.state.itemWidth} />}
+            renderItem={({ item }) => <Item title={item.title} imgUrl={item.url_s} itemWidth={this.props.itemWidth} />}
             keyExtractor={item => item.id}
             onEndReached={this.loadMore}
             onEndReachedThreshold={0.3}
             initialNumToRender={5}
+            key={this.props.columns}
           />
         </View>
       </View>
