@@ -4,6 +4,7 @@ import Search from './components/SearchComponent';
 import Gallery from './components/GalleryComponent';
 import ColumnModifier from './components/ColumnModifier';
 import axios from 'axios';
+import NetInfo from "@react-native-community/netinfo";
 
 const API_KEY = '3264f8a3442962793f611977d2589e03'
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -16,39 +17,58 @@ class Flickr extends Component {
       pageNo: 0,
       searchedText: "",
       columns: 2,
+      isInternetReachable: true,
     };
     this.timer
+    this.unsubscribe
   }
 
   componentDidMount() {
-    // this.retrieveData("kitten")
-    // if (this.state.name == null) {
-    //   this.save("kitten", DATA)
-    //   this.retrieveData("kitten")
-    // }
+    NetInfo.fetch().then(state => {
+      this.updateReachableState(state.isInternetReachable)
+    });
+
+    // Subscribe
+    this.unsubscribe = NetInfo.addEventListener(state => {
+      this.updateReachableState(state.isInternetReachable)
+    });
+  }
+
+  updateReachableState = isReachable => {
+    if (isReachable !== this.state.isInternetReachable) {
+      this.setState({
+        ...this.state,
+        isInternetReachable: isReachable,
+      })
+    }
   }
 
   componentWillUnmount() {
     clearTimeout(this.timer)
+    // Unsubscribe
+    this.unsubscribe();
   }
 
   requestData = (text) => {
-    const urlEndpoint = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&format=json&text=.${text}&nojsoncallback=true&per_page=5&extras=url_s&page=${this.state.pageNo+1}`
-    
-    // axios.get(urlEndpoint)
-    // .then((response) => { 
-    //   // console.log('requestData')
-    //   this.updateStateAndSaveData(response, text)
-    // }).catch((error) => { console.log(error)
-    // })
-    
-    this.retrieveData(text.toLowerCase())
+    if (this.state.isInternetReachable) {
+      console.log('requestData');
+      
+      const urlEndpoint = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&format=json&text=.${text}&nojsoncallback=true&per_page=5&extras=url_s&page=${this.state.pageNo+1}`
+      axios.get(urlEndpoint)
+      .then((response) => { 
+        this.updateStateAndSaveData(response, text)
+      })
+      .catch((error) => { console.log(error)
+      })
+    }
+    else {
+      if (this.state.flickrData == null) {
+        this.retrieveData(text.toLowerCase())
+      }
+    }    
   }
 
   updateStateAndSaveData(response, searchedText) {
-    // console.log(response);
-    
-    // console.log('updateStateAndSaveData')
     const page = response.data.photos.page
     const pages = response.data.photos.pages
     const total = response.data.photos.total
@@ -102,12 +122,14 @@ class Flickr extends Component {
   }
 
   resetAndSearch = (text) => {
-    this.setState({
-      ...this.state,
-      flickrData: null,
-      pageNo: 0,
-      searchedText: text
-    }, this.requestData(text))
+    if (text !== this.state.searchedText) {
+      this.setState({
+        ...this.state,
+        flickrData: null,
+        pageNo: 0,
+        searchedText: text
+      }, this.requestData(text))  
+    }
   }
 
   increaseColumn = () => {
@@ -129,7 +151,7 @@ class Flickr extends Component {
   }
 
   render() {
-    const list = (this.state.flickrData) ? <Gallery data={this.state.flickrData.photo} columns={this.state.columns} loadMorePhotos={this.loadMorePhotos} itemWidth={SCREEN_WIDTH / this.state.columns}></Gallery> : null
+    const list = (this.state.flickrData && this.state.flickrData.photo) ? <Gallery data={this.state.flickrData.photo} columns={this.state.columns} loadMorePhotos={this.loadMorePhotos} itemWidth={SCREEN_WIDTH / this.state.columns}></Gallery> : null
     return (
       <View>
         <Search search={this.resetAndSearch}></Search>
