@@ -2,20 +2,41 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import Search from './components/SearchComponent';
 import Gallery from './components/GalleryComponent';
+import axios from 'axios';
+
+const API_KEY = '3264f8a3442962793f611977d2589e03'
 
 class Flickr extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      flickrData: null,
+      pageNo: 1,
     };
   }
 
+  requestData = (text) => {
+    const urlEndpoint = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${API_KEY}&format=json&text=.${text}&nojsoncallback=true&per_page=20&extras=url_s&page=${this.state.pageNo}`
+    axios.get(urlEndpoint)
+    .then((response) => { 
+      console.log(response)
+      this.setState((prevState, props) => ({
+        ...this.state,
+        flickrData: response.data,
+        pageNo: prevState.pageNo+1,
+      }))
+    }).catch((error) => { console.log(error)
+    })
+  }
+
   render() {
+    const list = this.state.flickrData && this.state.flickrData.photos && this.state.flickrData.photos.photo ?
+      <Gallery data={this.state.flickrData.photos.photo} columns={2}></Gallery> : null
     return (
       <View>
         <Text> index </Text>
-        <Search></Search>
-        <Gallery data={DATA.photos.photo} columns={2}></Gallery>
+        <Search search={this.requestData}></Search>
+        {list}
       </View>
     );
   }

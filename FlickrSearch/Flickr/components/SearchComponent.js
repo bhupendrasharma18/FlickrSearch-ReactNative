@@ -10,6 +10,10 @@ class SearchComponent extends Component {
     };
   }
 
+  actionSubmit = () => {
+    this.props.search(this.state.searchedText)
+  }
+
   handleInputText = (text) => {
     const enableButton = (text) ? true : false
     this.setState({
@@ -24,7 +28,7 @@ class SearchComponent extends Component {
         <Text> SearchComponent </Text>
         <View style={styles.searchContainer}>
           <TextInput style={styles.textInput} placeholder='Search on Flikcr' onChangeText={this.handleInputText}></TextInput>
-          <Button title='Submit' onPress={this.makeRequestCountryDetails} disabled={!this.state.canSubmit}></Button>
+          <Button title='Submit' onPress={this.actionSubmit} disabled={!this.state.canSubmit}></Button>
         </View>
       </View>
     );
